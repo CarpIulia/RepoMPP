@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+
+    <util:properties id="props" location="classpath:server.properties"></util:properties>
+
+    <util:properties id="serverProps">
+        <prop key="jdbc.url">jdbc:sqlite:D:\\Facultate\\Anul2Sem2\\Medii de proiectare si programare\\Laborator\\DB\\CasaBileteBaschet.db</prop>
+    </util:properties>
+
+    <bean id="repoBilete" class="repository.RepoBilete">
+        <constructor-arg ref="serverProps"/>
+    </bean>
+
+    <bean id="repoCasieri" class="repository.RepoCasieri">
+        <constructor-arg ref="serverProps"/>
+    </bean>
+
+    <bean id="repoMeciuri" class="repository.RepoMeciuri">
+        <constructor-arg ref="serverProps"/>
+    </bean>
+
+    <bean id="casaBileteService" class="service.CasaBileteService">
+        <constructor-arg ref="repoBilete"/>
+        <constructor-arg ref="repoCasieri"/>
+        <constructor-arg ref="repoMeciuri"/>
+    </bean>
+
+    <bean class="org.springframework.remoting.rmi.RmiServiceExporter">
+
+        <property name="serviceName" value="CasaBileteService"/>
+        <property name="service" ref="casaBileteService"/>
+        <property name="serviceInterface" value="services.IServices"/>
+        <property name="servicePort" value="1099"/>
+    </bean>
+</beans>
